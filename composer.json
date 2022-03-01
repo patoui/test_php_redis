@@ -1,0 +1,18 @@
+{
+    "name": "patoui/test_php_redis",
+    "autoload": {
+        "psr-4": {
+            "Patoui\\TestPhpRedis\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Patrique Ouimet",
+            "email": "patrique.ouimet@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "8.1.*",
+        "ext-redis": "*"
+    }
+}
