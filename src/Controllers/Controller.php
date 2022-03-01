@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Patoui\TestPhpRedis\Controllers;
 
+use JetBrains\PhpStorm\NoReturn;
 use Redis;
 
 final class Controller
@@ -81,7 +82,7 @@ final class Controller
         return $redis;
     }
 
-    private static function json(array $response): void
+    #[NoReturn] private static function json(array $response): void
     {
         header('Content-Type: application/json');
         echo json_encode($response, JSON_PRETTY_PRINT);
