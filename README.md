@@ -1,3 +1,7 @@
+## ⚠️ WARNING ⚠️
+
+**This repository is not meant as any kind of reference for production code.**
+
 # Test PHP Redis Streams
 
 Simple project to test redis streams
