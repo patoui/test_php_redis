@@ -8,9 +8,10 @@ use Patoui\TestPhpRedis\Message;
 
 final class UserCreated extends Message
 {
-    public string $id = 'ABC321';
-
-    public string $email = 'johndoe@email.com';
+    public function __construct(
+        public string $id,
+        public string $email
+    ) {}
 
     public function getId(): int|string
     {

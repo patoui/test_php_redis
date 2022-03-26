@@ -30,4 +30,19 @@ final class Group
             $message_ids
         );
     }
+
+    /**
+     * Delete a consumer
+     * @param string $consumer_name
+     * @return int
+     */
+    public function deleteConsumer(string $consumer_name): int
+    {
+        return $this->stream->redis->xGroup(
+            'DELCONSUMER',
+            $this->stream->name,
+            $this->name,
+            $consumer_name
+        );
+    }
 }

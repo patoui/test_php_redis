@@ -47,7 +47,21 @@ final class Controller
 
     public function add(): void
     {
-        self::json([$this->stream->addMessage(new UserCreated())]);
+        self::json([
+            $this->stream->addMessage(
+                new UserCreated(
+                    uniqid('user_', true),
+                    'johndoe@email.com'
+                )
+            )
+        ]);
+    }
+
+    public function del_consumer(): void
+    {
+        self::json([
+            $this->group->deleteConsumer($this->consumer->name)
+        ]);
     }
 
     public function len(): void
