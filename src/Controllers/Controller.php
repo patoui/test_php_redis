@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Patoui\TestPhpRedis\Controllers;
 
+use DateTimeImmutable;
 use Patoui\TestPhpRedis\Consumer;
 use Patoui\TestPhpRedis\Group;
 use Patoui\TestPhpRedis\Messages\UserCreated;
@@ -31,6 +32,17 @@ final class Controller
             $acknowledged += $this->group->acknowledge($id);
         }
         self::json([$acknowledged, $messages]);
+    }
+
+    public function range_datetime(): void
+    {
+        self::json([
+            $this->stream->getMessagesInDateTimeRange(
+                new DateTimeImmutable($_GET['from'] . ' 00:00:00'),
+                new DateTimeImmutable($_GET['to'] . ' 23:59:59'),
+                10
+            )
+        ]);
     }
 
     public function group_create(): void

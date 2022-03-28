@@ -20,13 +20,14 @@ final class Consumer
     public function readGroupMessages(
         Group $group,
         int $count = 10,
-        int $wait = 1000
+        int $wait = 100
     ): array {
-        // triggering xReadGroup will create the consumer if it does not exists
+        // triggering xReadGroup will create the consumer if it does not exist
         $raw_group_messages = $group->stream->redis->xReadGroup(
                 $group->name,
                 $this->name,
-                [$group->stream->name => '0'],
+                // '>' get messages not yet consumed by the group within the given stream
+                [$group->stream->name => '>'],
                 $count,
                 $wait
             )[$group->stream->name] ?? [];
@@ -39,11 +40,7 @@ final class Consumer
             }
 
             foreach ($messages as $message) {
-                if ($message === 'value' || $message === 'Object') {
-                    $parsed_messages[$message_id][] = $message;
-                } else {
-                    $parsed_messages[$message_id][] = igbinary_unserialize($message);
-                }
+                $parsed_messages[$message_id][] = igbinary_unserialize($message);
             }
         }
 
