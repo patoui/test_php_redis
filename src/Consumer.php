@@ -12,15 +12,15 @@ final class Consumer
 
     /**
      * Read the given groups messages as the current consumer
-     * @param Group $group
-     * @param int   $count number of messages to retrieve
-     * @param int   $wait  wait up to X milliseconds until a message arrives
+     * @param Group    $group
+     * @param int      $count number of messages to retrieve
+     * @param int|null $wait  wait up to X milliseconds until a message arrives
      * @return array
      */
     public function readGroupMessages(
         Group $group,
         int $count = 10,
-        int $wait = 100
+        ?int $wait = null
     ): array {
         // triggering xReadGroup will create the consumer if it does not exist
         $raw_group_messages = $group->stream->redis->xReadGroup(

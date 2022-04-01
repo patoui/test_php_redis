@@ -127,6 +127,10 @@ final class Stream
         string $end,
         ?int $count
     ): array {
-        return $this->redis->xRange($this->name, $start, $end, $count) ?: [];
+        $messages = $this->redis->xRange($this->name, $start, $end, $count) ?: [];
+        foreach ($messages as $key => $values) {
+            $messages[$key] = array_map('igbinary_unserialize', $values);
+        }
+        return $messages;
     }
 }

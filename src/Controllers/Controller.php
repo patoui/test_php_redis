@@ -65,7 +65,7 @@ final class Controller
                     uniqid('user_', true),
                     'johndoe@email.com'
                 )
-            )
+        )
         ]);
     }
 
