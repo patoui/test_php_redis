@@ -34,6 +34,26 @@ services:
     networks:
       - app-network
 
+  #MySQL Service
+  mysql:
+    container_name: test_php_redis__mysql
+    image: mysql:latest
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: strong-password
+      MYSQL_DATABASE: db
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker/mysql/init/:/docker-entrypoint-initdb.d
+      - dbdata:/var/lib/mysql
+    networks:
+      - app-network
+
   #Redis Service
   redis:
     container_name: test_php_redis__redis
@@ -47,3 +67,9 @@ services:
 networks:
   app-network:
     driver: bridge
+
+#Volumes
+volumes:
+  test_php_redis__mysql:
+  dbdata:
+    driver: local

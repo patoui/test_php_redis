@@ -38,14 +38,14 @@ This application uses simple routing to trigger various redis stream actions:
 ```php
 use Patoui\TestPhpRedis\Consumer;
 use Patoui\TestPhpRedis\Group;
-use Patoui\TestPhpRedis\Messages\UserCreated;
+use Patoui\TestPhpRedis\Messages\Deposited;
 use Patoui\TestPhpRedis\Stream;
 
 
 $stream   = new Stream(redis(), 'mystream');
 $group    = new Group($stream, 'mygroup');
 
-$group->addMessage(new UserCreated(uniqid(), 'johndoe@email.com'));
+$group->addMessage(new Deposited(uniqid(), 'johndoe@email.com'));
 ```
 
 #### Add message to a group
@@ -53,7 +53,7 @@ $group->addMessage(new UserCreated(uniqid(), 'johndoe@email.com'));
 ```php
 use Patoui\TestPhpRedis\Consumer;
 use Patoui\TestPhpRedis\Group;
-use Patoui\TestPhpRedis\Messages\UserCreated;
+use Patoui\TestPhpRedis\Messages\Deposited;
 use Patoui\TestPhpRedis\Stream;
 
 $stream   = new Stream(redis(), 'users');
@@ -64,7 +64,7 @@ $consumer = new Consumer('notifications');
 $messages = $consumer->readGroupMessages($group);
 
 foreach ($messages as $id => $values) {
-    /** @var UserCreated $user_created */
+    /** @var Deposited $user_created */
     foreach ($values as $user_created) {
         echo sprintf('User %s was created', $user->email) . PHP_EOL;
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Patoui\TestPhpRedis\Messages\UserCreated;
+use Patoui\TestPhpRedis\Messages\Deposited;
 use Patoui\TestPhpRedis\Stream;
 
 require_once dirname(__DIR__) . '/src/bootstrap.php';
@@ -25,7 +25,7 @@ $end_read_id   = '+';
 
 while (true) {
     $messages = $stream->getMessagesInRange($start_read_id, $end_read_id, 10);
-    /** @var array<int, UserCreated> $message */
+    /** @var array<int, Deposited> $message */
     foreach ($messages as $key => $message) {
         $content = current($message)->id;
         echo "READ MESSAGE: {$key} : {$content}" . PHP_EOL;

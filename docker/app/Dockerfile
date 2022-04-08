@@ -22,7 +22,8 @@ RUN pecl install -o -f redis \
     && pecl install -o -f igbinary \
     && rm -rf /tmp/pear \
     && docker-php-ext-enable redis \
-    && docker-php-ext-enable igbinary
+    && docker-php-ext-enable igbinary \
+    && docker-php-ext-install zip pdo_mysql
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

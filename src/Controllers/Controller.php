@@ -7,11 +7,13 @@ namespace Patoui\TestPhpRedis\Controllers;
 use DateTimeImmutable;
 use Patoui\TestPhpRedis\Consumer;
 use Patoui\TestPhpRedis\Group;
-use Patoui\TestPhpRedis\Messages\UserCreated;
+use Patoui\TestPhpRedis\Message;
 use Patoui\TestPhpRedis\Stream;
 
 final class Controller
 {
+    use JsonHelper;
+
     private Stream   $stream;
     private Group    $group;
     private Consumer $consumer;
@@ -59,13 +61,19 @@ final class Controller
 
     public function add(): void
     {
+        $c = new class extends Message {
+            public function __construct(public string $id, public string $email)
+            {}
+            public function getId(): int|string
+            {
+                return $this->id;
+            }
+        };
         self::json([
-            $this->stream->addMessage(
-                new UserCreated(
-                    uniqid('user_', true),
-                    'johndoe@email.com'
-                )
-        )
+            $this->stream->addMessage(new $c(
+                uniqid('tpr_', true),
+                'johndoe@email.com'
+            ))
         ]);
     }
 
@@ -88,12 +96,5 @@ final class Controller
             'groups'    => $this->stream->groups(),
             'stream'    => $this->stream->info(),
         ]);
-    }
-
-    private static function json(array $response): void
-    {
-        header('Content-Type: application/json');
-        echo json_encode($response, JSON_PRETTY_PRINT);
-        die();
     }
 }
