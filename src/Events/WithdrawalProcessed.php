@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Patoui\TestPhpRedis\Events;
 
 use EventSauce\EventSourcing\Serialization\SerializablePayload;
-use Patoui\TestPhpRedis\DataTransferObjects\NewDeposit;
 use Patoui\TestPhpRedis\DataTransferObjects\NewWithdrawal;
 
 final class WithdrawalProcessed implements SerializablePayload
@@ -23,6 +22,6 @@ final class WithdrawalProcessed implements SerializablePayload
 
     public static function fromPayload(array $payload): SerializablePayload
     {
-        return new self(new NewDeposit(...$payload));
+        return new self(new NewWithdrawal(...$payload));
     }
 }

@@ -20,55 +20,23 @@ docker-compose up
 
 It should be running on `localhost`
 
-This application uses simple routing to trigger various redis stream actions:
+If you'd like to test messaging (Redis Streams) be sure to run one of the consumer scripts found in the `scripts` directory, see the section below for more details on their behaviour.
+
+This application uses simple routing to trigger various actions against a bank account:
 
 ```
-/add = xAdd
-/claim = xClaim
-/read_group = xReadGroup
-/ack = xAck
-/len = xLen
-/info = xInfo
+GET /new/store = create a new account
+GET /new/update?uuid=[account_uuid]&a=[signed integer of amount to deposit or withdraw] = update an account balance
+GET /new/show?uuid=[account_uuid] = show an account's balance
 ```
 
 ### Example usage
 
-#### Add message to a group
+To see how events are added to an aggregate root (Account), see `NewController.php`
 
-```php
-use Patoui\TestPhpRedis\Consumer;
-use Patoui\TestPhpRedis\Group;
-use Patoui\TestPhpRedis\Messages\Deposited;
-use Patoui\TestPhpRedis\Stream;
+### Additional test scripts
 
-
-$stream   = new Stream(redis(), 'mystream');
-$group    = new Group($stream, 'mygroup');
-
-$group->addMessage(new Deposited(uniqid(), 'johndoe@email.com'));
-```
-
-#### Add message to a group
-
-```php
-use Patoui\TestPhpRedis\Consumer;
-use Patoui\TestPhpRedis\Group;
-use Patoui\TestPhpRedis\Messages\Deposited;
-use Patoui\TestPhpRedis\Stream;
-
-$stream   = new Stream(redis(), 'users');
-$group    = new Group($stream, 'created');
-
-// Read messages from a consumer group
-$consumer = new Consumer('notifications');
-$messages = $consumer->readGroupMessages($group);
-
-foreach ($messages as $id => $values) {
-    /** @var Deposited $user_created */
-    foreach ($values as $user_created) {
-        echo sprintf('User %s was created', $user->email) . PHP_EOL;
-    }
-    // acknowledge the message was processed
-    $group->acknowledge($id);
-}
-```
+There are 3 scripts found in the `scripts` directory:
+- `multi_consumer.php` to demonstrate how an application could setup multi consumer (all consumers get all messages)
+- `consumer.php` to demonstrate how an application could setup consumers (consumers only process messages once)
+- `producer.php` to demonstrate how an application can utilize aggregates to produce events/messages

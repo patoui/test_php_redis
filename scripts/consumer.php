@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 use Patoui\TestPhpRedis\Consumer;
 use Patoui\TestPhpRedis\Group;
-use Patoui\TestPhpRedis\Messages\Deposited;
+use Patoui\TestPhpRedis\Messages\Message;
+use Patoui\TestPhpRedis\Messages\MessageHandlerFactory;
 use Patoui\TestPhpRedis\Stream;
 
 require_once dirname(__DIR__) . '/src/bootstrap.php';
@@ -17,15 +18,21 @@ if (!$consumer_name) {
 }
 
 $redis    = redis();
-$stream   = new Stream($redis, 'mystream');
+$stream   = new Stream($redis, 'es_stream');
 $group    = new Group($stream, 'mygroup');
 $consumer = new Consumer($consumer_name);
 
 while (true) {
     $messages = $consumer->readGroupMessages($group);
-    /** @var array<int, Deposited> $message */
-    foreach ($messages as $key => $message) {
-        $content = current($message)->id;
-        echo "READ MESSAGE: {$key} : {$content}" . PHP_EOL;
+    foreach ($messages as $key => $items) {
+        /** @var Message $message */
+        foreach ($items as $message) {
+            if ($message_handlers = MessageHandlerFactory::make($message)) {
+                foreach ($message_handlers as $message_handler) {
+                    $message_handler->handle();
+                }
+            }
+        }
+        echo "READ MESSAGE: {$key}" . PHP_EOL;
     }
 }
