@@ -32,7 +32,7 @@ while (true) {
     }
     if ($messages) {
         $last_message_id = array_key_last($messages);
-        $redis->setNx($last_read_key, $last_message_id);
+        $redis->set($last_read_key, $last_message_id);
         $start_read_id = "({$last_message_id}";
         echo "STORED LAST MSG ID: {$last_message_id}" . PHP_EOL;
     }
